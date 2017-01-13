@@ -1,4 +1,5 @@
-import psycopg2
+from database import connect
+# database is database.py file, connect is the method
 
 class User:
 
@@ -12,24 +13,9 @@ class User:
         return "<User {}>".format(self.email)
     # <> are not required of course
 
-    def save_to_db_old(self):
-        connection = psycopg2.connect(user='postgres', password='1234', database='Learning',host='localhost')
-        # postgres is a super user with access to everything
-        # cursor is just a thing to read data or execute commands
-        # we have to open a cursor to this connection
-        # always close cursors in the end
-        with connection.cursor() as cursor:
-            cursor.execute('INSERT INTO users(email,first_name,last_name) VALUES (%s,%s,%s)',
-                           (self.email, self.first_name, self.last_name))
-        connection.commit() # necessary AF!
-        connection.close()
-        # execute means please insert the data
-        # commit means the psycopg will do it immediately
-        # so this saves the data actually
-
         # the way to do it without commits and closes below:
     def save_to_db(self):
-        with psycopg2.connect(user='postgres', password='1234', database='Learning', host='localhost') as connection:
+        with connect() as connection:
             with connection.cursor() as cursor:
                      cursor.execute('INSERT INTO users(email,first_name,last_name) VALUES (%s,%s,%s)',
                                (self.email, self.first_name, self.last_name))
@@ -45,7 +31,7 @@ class User:
     @classmethod
     def load_from_db_by_email(cls, email): # cls - currently bound class. self woult be currently bound object
         # note that we must pass the email as a parameter
-        with psycopg2.connect(user='postgres', password='1234', database='Learning', host='localhost') as connection:
+        with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute('SELECT * FROM users WHERE email=%s', (email,))
                 # execute(query, args for query)

@@ -9,4 +9,8 @@ from user import User
 
 my_user = User.load_from_db_by_email('testuser@testuser.ru')
 
+# test adding user again
+#my_user2 = User('testuser2@testuser2.ru', 'Jose2', 'Salvatierra2',None)
+#my_user2.save_to_db()
+
 print(my_user)
