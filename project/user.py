@@ -1,4 +1,4 @@
-from database import ConnectionFromPool
+from database import CursorFromConnectionPool
 # database is database.py file, connect is the method
 
 class User:
@@ -15,8 +15,7 @@ class User:
 
         # the way to do it without commits and closes below:
     def save_to_db(self):
-        with ConnectionFromPool() as connection:
-            with connection.cursor() as cursor:
+        with CursorFromConnectionPool() as cursor:
                  cursor.execute('INSERT INTO users(email,first_name,last_name) VALUES (%s,%s,%s)',
                                    (self.email, self.first_name, self.last_name))
                 # commit and close is done for me automatically
@@ -32,8 +31,7 @@ class User:
     @classmethod
     def load_from_db_by_email(cls, email): # cls - currently bound class. self woult be currently bound object
         # note that we must pass the email as a parameter
-        with ConnectionFromPool() as connection:
-            with connection.cursor() as cursor:
+        with CursorFromConnectionPool() as cursor:
                 cursor.execute('SELECT * FROM users WHERE email=%s', (email,))
                     # execute(query, args for query)
                     # (email,) is kinda a tuple here
